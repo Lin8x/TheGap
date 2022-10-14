@@ -3,9 +3,10 @@
 
 #include "MainCharacter.h"
 
-#include "Components/CapsuleComponent.h"
+//#include "Components/CapsuleComponent.h"
+//#include "../../../../../UnrealEngine/UE_5.0/Engine/Shaders/Private/PathTracing/Material/PathTracingMaterialCommon.ush"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/KismetMathLibrary.h"
+//#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -18,15 +19,33 @@ AMainCharacter::AMainCharacter()
 	// // Get the capsule component
 	// CapsuleComponent = this->GetCapsuleComponent();
 
-	// SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	// SpringArm->SetupAttachment(GetRootComponent());
-	// SpringArm->TargetArmLength = 600;
-
 	//Set the camera component to look through
 	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FP Camera"));
 	FirstPersonCamera->SetupAttachment(GetRootComponent());
 	FirstPersonCamera->SetRelativeLocation(FVector(0,0,40));
 	//FirstPersonCamera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+
+	//Setup springarm for flashlight
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
+	SpringArm->SetupAttachment(FirstPersonCamera);
+	SpringArm->SetRelativeLocation(FVector(0,0,0));
+	SpringArm->bEnableCameraRotationLag = true;
+	SpringArm->CameraRotationLagSpeed = 5;
+	SpringArm->TargetArmLength = 0;
+	//SpringArm->TargetArmLength = 600;
+
+	//Setup Spotlight as flashlight
+	Flashlight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Flashlight"));
+	Flashlight->SetupAttachment(SpringArm);
+	Flashlight->SetRelativeLocation(FVector(0,0,0));
+	Flashlight->Intensity = 20000;
+	Flashlight->InnerConeAngle = 5;
+	Flashlight->OuterConeAngle = 25;
+	//FlashlightMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Content/Materials/flashlightbackground_Mat.uasset"), nullptr, LOAD_None, nullptr);
+	//auto path = TEXT("/Content/Materials/flashlightbackground_Mat.uasset"); //path to the asset we created in edtior. (Right click -> Miscellaneous -> Data Asset)
+	//static ConstructorHelpers::FObjectFinder<UMaterial> DefaultMasterAsset(path);
+	//FlashlightMaterial = DefaultMasterAsset.Object;
+	Flashlight->LightFunctionMaterial = FlashlightMaterial;
 }
 
 // Called when the game starts or when spawned
@@ -73,7 +92,7 @@ void AMainCharacter::MoveUpDown(float Value)
 {
 	//Direction must use the UKismetMathLibrary in order to get the
 	//Forward Vector of a rotator made via the Controller's Yaw
-	FVector const Direction = UKismetMathLibrary::GetForwardVector(FRotator(0, Controller->GetControlRotation().Yaw, 0));
+	//FVector const Direction = UKismetMathLibrary::GetForwardVector(FRotator(0, Controller->GetControlRotation().Yaw, 0));
 	//FVector const Direction = CorrectRotation.GetFo;
 
 	//Getting the Forward Direction of the Controller's Yaw (IE Forward/Back) based on the Controller's Rotation
@@ -88,7 +107,7 @@ void AMainCharacter::MoveLeftRight(float Value)
 {
 	//Direction must use the UKismetMathLibrary in order to get the
 	//Forward Vector of a rotator made via the Controller's Yaw
-	FVector const Direction = UKismetMathLibrary::GetRightVector(FRotator(0, Controller->GetControlRotation().Yaw, 0));
+	//FVector const Direction = UKismetMathLibrary::GetRightVector(FRotator(0, Controller->GetControlRotation().Yaw, 0));
 	//FVector const Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 
 	//Getting the Right Direction of the Controller's Yaw (IE Left/Right) based on the Controller's Rotation

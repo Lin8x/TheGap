@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SpotLightComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MainCharacter.generated.h"
 
-UCLASS(BlueprintType)
+UCLASS(Blueprintable)
 class THEGAP_API AMainCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -36,6 +37,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player Camera")
 	UCameraComponent* FirstPersonCamera;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category="Player Camera")
+	USpringArmComponent* SpringArm;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category="Player Camera")
+	USpotLightComponent* Flashlight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player Camera")
+	UMaterial* FlashlightMaterial;
 
 protected:
 	// Called when the game starts or when spawned
