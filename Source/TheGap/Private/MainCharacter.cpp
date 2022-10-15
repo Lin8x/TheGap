@@ -38,9 +38,10 @@ AMainCharacter::AMainCharacter()
 	Flashlight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Flashlight"));
 	Flashlight->SetupAttachment(SpringArm);
 	Flashlight->SetRelativeLocation(FVector(0,0,0));
-	Flashlight->Intensity = 20000;
-	Flashlight->InnerConeAngle = 5;
-	Flashlight->OuterConeAngle = 25;
+	Flashlight->Intensity = 90000;
+	Flashlight->AttenuationRadius = 14000;
+	Flashlight->InnerConeAngle = 0;
+	Flashlight->OuterConeAngle = 30;
 	//FlashlightMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Content/Materials/flashlightbackground_Mat.uasset"), nullptr, LOAD_None, nullptr);
 	//auto path = TEXT("/Content/Materials/flashlightbackground_Mat.uasset"); //path to the asset we created in edtior. (Right click -> Miscellaneous -> Data Asset)
 	//static ConstructorHelpers::FObjectFinder<UMaterial> DefaultMasterAsset(path);
